@@ -1,0 +1,124 @@
+.customSelectContainer {
+    position: relative;
+    background-color: #fff;
+    border: 1px solid red;
+    border-radius: 5px;
+    padding: 5px 0;
+    cursor: pointer;
+}
+
+.customSelectValueContainer {
+    display: block;
+    width: calc(100% - 40px);
+    position: relative;
+    height: 31px;
+}
+
+.customSelectValue {
+    position: relative;
+    z-index: 5;
+    padding: 0 10px;
+    height: 31px;
+    line-height: 31px;
+}
+
+.customSelectValue.hideCurrent {
+    display: none;
+}
+
+.customSelectArrow {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transition: 200ms;
+    transform: translateY(-50%);
+    transform-origin: center;
+    display: flex;
+    aspect-ratio: 1/1;
+}
+
+.customSelectArrow.isOpen {
+    transform: translateY(-50%) rotate(180deg);
+}
+
+.customSelectSearchInput {
+    position: absolute;
+    top: 0;
+    left: 0;
+    border: none;
+    outline: none;
+    box-shadow: none;
+    padding: 0 10px;
+    display: block;
+    width: 100%;
+    border-radius: 5px;
+    font-size: 16px;
+    height: 31px;
+    line-height: 31px;
+}
+
+.customSelectDropdown {
+    position: absolute;
+    left: 0;
+    top: calc(100% + 5px);
+    width: calc(100% + 40px);
+    max-height: 300px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    border-radius: 5px;
+    border: 1px solid #969696;
+    background-color: #f9f9f9;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.customSelectDropdown.isOpen {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.dropdown-item {
+    padding: 5px 10px;
+}
+
+.dropdown-item:hover {
+    background-color: #969696;
+}
+
+
+.dropdown-tags {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    gap: 5px;
+    position: relative;
+    padding: 0 10px;
+}
+
+.dropdown-tag-item {
+    background-color: #ff7300;
+    color: #FFF;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 2px 4px;
+    border-radius: 6px;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    margin-top: 5px;
+}
+
+.dropdown-tag-close {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    margin-left: 5px;
+}
