@@ -613,7 +613,7 @@ const App = () => {
   return (
     <div className="App">
       <div>
-        <CustomSelect options={options} bindLabel='title' multiple placeHolder='Yamete Eşşeği' filter onChange={(e) => handleChangeSelect(e)} />
+        <CustomSelect options={options} bindLabel='title' placeHolder='placeholder' bindValue='id' filter onChange={(e) => handleChangeSelect(e)} />
       </div>
     </div>
   );

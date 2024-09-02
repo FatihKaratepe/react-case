@@ -1,10 +1,15 @@
 .customSelectContainer {
     position: relative;
     background-color: #fff;
-    border: 1px solid red;
+    border: 1px solid #a9a9a9;
     border-radius: 5px;
     padding: 5px 0;
     cursor: pointer;
+}
+
+.customSelectContainer.disabled {
+    pointer-events: none;
+    background-color: #ddd;
 }
 
 .customSelectValueContainer {
@@ -12,6 +17,11 @@
     width: calc(100% - 40px);
     position: relative;
     height: 31px;
+}
+
+.disabled .customSelectValueContainer {
+    pointer-events: none;
+    background-color: #ddd;
 }
 
 .customSelectValue {
@@ -55,6 +65,10 @@
     font-size: 16px;
     height: 31px;
     line-height: 31px;
+}
+
+.customSelectSearchInput:disabled {
+    background-color: #ddd;
 }
 
 .customSelectDropdown {
@@ -121,4 +135,10 @@
     -ms-flex-align: center;
     align-items: center;
     margin-left: 5px;
+}
+
+.customSelectNotFoundContainer {
+    text-align: center;
+    color: #494949;
+    padding: 20px 0;
 }
