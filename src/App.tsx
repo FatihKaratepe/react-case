@@ -621,6 +621,14 @@ const App = () => {
     console.log(e)
   }
 
+  const SelectedIcon = () => {
+    return (
+      <svg height="20" width="20" clipRule="evenodd" fillRule="evenodd" strokeLinejoin="round" strokeMiterlimit="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="m9.831 16.198.002-.003-1.113-.996-.004.004-2.468-2.202c-.144-.128-.322-.191-.5-.191-.417 0-.749.337-.749.75 0 .206.084.412.249.56l2.478 2.21-.767.873-4.71-4.202c-.144-.128-.322-.191-.5-.191-.416 0-.749.337-.749.75 0 .206.084.412.25.56l5.268 4.7c.143.128.321.191.499.191.206 0 .41-.084.559-.25l1.264-1.437 1.677 1.496c.143.128.321.191.499.191.206 0 .409-.084.558-.25l11.234-12.499c.129-.143.192-.322.192-.501 0-.419-.338-.75-.748-.75-.206 0-.411.084-.559.249l-10.735 11.943zm-.451-1.75 1.114.996 8.316-9.182c.128-.143.191-.322.191-.501 0-.419-.337-.75-.748-.75-.206 0-.411.084-.559.249z" fillRule="nonzero" />
+      </svg>
+    )
+  }
+
   return (
     <div className="App">
       <div>
@@ -628,7 +636,7 @@ const App = () => {
         {/* <CustomSelect options={newOptions} bindLabel='title' placeHolder='placeholder' bindValue='id' filter onChange={(e) => handleChangeSelect(e)} /> */}
       </div>
       <div style={{ marginTop: '25px' }}>
-        <CustomSelect options={newOptions} placeHolder='placeholder' multiple filter onChange={(e) => handleChangeSelect(e)} />
+        <CustomSelect options={options} bindLabel='title' bindValue='id' placeHolder='placeholder' multiple filter selectedIcon={<SelectedIcon />} onChange={(e) => handleChangeSelect(e)} />
 
       </div>
     </div>
