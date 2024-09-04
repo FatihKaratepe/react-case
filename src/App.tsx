@@ -606,6 +606,17 @@ const App = () => {
     }
   ]
 
+  const newOptions = [
+    {
+      label: <span>Label 1</span>,
+      value: 1
+    },
+    {
+      label: "Label 2",
+      value: 2
+    },
+  ]
+
   const handleChangeSelect = (e: any) => {
     console.log(e)
   }
@@ -613,7 +624,12 @@ const App = () => {
   return (
     <div className="App">
       <div>
-        <CustomSelect options={options} bindLabel='title' placeHolder='placeholder' bindValue='id' filter onChange={(e) => handleChangeSelect(e)} />
+        <CustomSelect options={newOptions} placeHolder='placeholder' filter onChange={(e) => handleChangeSelect(e)} />
+        {/* <CustomSelect options={newOptions} bindLabel='title' placeHolder='placeholder' bindValue='id' filter onChange={(e) => handleChangeSelect(e)} /> */}
+      </div>
+      <div style={{ marginTop: '25px' }}>
+        <CustomSelect options={newOptions} placeHolder='placeholder' multiple filter onChange={(e) => handleChangeSelect(e)} />
+
       </div>
     </div>
   );

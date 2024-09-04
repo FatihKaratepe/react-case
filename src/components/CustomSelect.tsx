@@ -19,10 +19,10 @@ interface CustomSelectProps {
   onChange: (option: any) => void;
 }
 
-const ArrowIcon = ({ color = '#555', width = 16, height = 16 }: { color?: string, width?: number, height?: number }) => {
+const ArrowIcon = ({ color = '#667085', width = 20, height = 20 }: { color?: string, width?: number, height?: number }) => {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" width={width} height={height} viewBox="0 0 24 24">
-      <path fill={color} d="M0 7.33l2.829-2.83 9.175 9.339 9.167-9.339 2.829 2.83-11.996 12.17z" />
+    <svg width={width} height={height} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M5 7.5L10 12.5L15 7.5" stroke={color} strokeWidth="1.66667" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 };
@@ -71,11 +71,52 @@ const CustomSelect = ({ options, disabled = false, filter = false, multiple = fa
     };
   });
 
-  const getOptions = () => {
-    if (!searchValue) return options;
-    return options.filter((option) => bindLabel ? option[bindLabel].toLowerCase().indexOf(searchValue.toLowerCase()) >= 0 :
-      option.label.toLowerCase().indexOf(searchValue.toLowerCase()) >= 0);
+  const getLabelText = (label: any) => {
+    if (typeof label === 'string') {
+      return label;
+    }
+
+    if (React.isValidElement(label)) {
+      let text = '';
+      const element = label as React.ReactElement;
+      React.Children.forEach(element.props.children, (child) => {
+        if (typeof child === 'string') {
+          text += child;
+        } else if (React.isValidElement(child)) {
+          text += getLabelText(child);
+        }
+      });
+      return text;
+    }
+
+    return '';
   };
+
+  const getOptions = () => {
+    let filteredOptions = options;
+
+    if (searchValue) {
+      filteredOptions = options.filter((option) => {
+        const labelText = bindLabel ? getLabelText(option[bindLabel]) : getLabelText(option.label);
+        return labelText.toLowerCase().indexOf(searchValue.toLowerCase()) >= 0;
+      });
+    }
+
+    if (sorting) {
+      const { sortKey, sortType } = sorting;
+      filteredOptions.sort((a, b) => {
+        const aValue = getLabelText(a[sortKey]);
+        const bValue = getLabelText(b[sortKey]);
+
+        if (aValue < bValue) return sortType === 'asc' ? -1 : 1;
+        if (aValue > bValue) return sortType === 'asc' ? 1 : -1;
+        return 0;
+      });
+    }
+
+    return filteredOptions;
+  };
+
 
   const isSelected = (option: any) => {
     if (multiple) return selectedValue!.filter((o: any) => bindValue ? o[bindValue] === option[bindValue] : o.value === option.value).length > 0;
@@ -119,7 +160,7 @@ const CustomSelect = ({ options, disabled = false, filter = false, multiple = fa
   };
 
   const removeOption = (option: any) => {
-    return selectedValue.filter((o: any) => bindValue ? o[bindValue] === option[bindValue] : o.value === option.value);
+    return selectedValue.filter((o: any) => bindValue ? (o[bindValue] !== option[bindValue]) : (o.value !== option.value));
   };
 
   const onTagRemove = (e: React.MouseEvent, option: any) => {

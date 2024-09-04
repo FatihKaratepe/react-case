@@ -1,15 +1,16 @@
 .customSelectContainer {
     position: relative;
-    background-color: #fff;
-    border: 1px solid #a9a9a9;
-    border-radius: 5px;
+    background-color: #ffffff;
+    border: 1px solid #D0D5DD;
+    border-radius: 8px;
     padding: 5px 0;
     cursor: pointer;
+    font-size: 14px;
 }
 
 .customSelectContainer.disabled {
     pointer-events: none;
-    background-color: #ddd;
+    background-color: rgba(0, 0, 0, 0.04);
 }
 
 .customSelectValueContainer {
@@ -21,7 +22,7 @@
 
 .disabled .customSelectValueContainer {
     pointer-events: none;
-    background-color: #ddd;
+    background-color: transparent;
 }
 
 .customSelectValue {
@@ -38,7 +39,7 @@
 
 .customSelectArrow {
     position: absolute;
-    right: 10px;
+    right: 14px;
     top: 50%;
     transition: 200ms;
     transform: translateY(-50%);
@@ -61,29 +62,34 @@
     padding: 0 10px;
     display: block;
     width: 100%;
-    border-radius: 5px;
-    font-size: 16px;
+    border-radius: 8px;
+    font-size: 14px;
     height: 31px;
     line-height: 31px;
+    background-color: transparent;
 }
 
 .customSelectSearchInput:disabled {
-    background-color: #ddd;
+    background-color: transparent;
 }
 
 .customSelectDropdown {
     position: absolute;
     left: 0;
-    top: calc(100% + 5px);
+    top: calc(100% + 10px);
     width: calc(100% + 40px);
     max-height: 300px;
     overflow-x: hidden;
     overflow-y: auto;
-    border-radius: 5px;
-    border: 1px solid #969696;
+    border-radius: 8px;
     background-color: #f9f9f9;
     opacity: 0;
     pointer-events: none;
+    z-index: 99;
+    padding: 2px;
+    box-shadow: 0 6px 16px 0 rgba(0, 0, 0, 0.08),
+        0 3px 6px -4px rgba(0, 0, 0, 0.12),
+        0 9px 28px 8px rgba(0, 0, 0, 0.05);
 }
 
 .customSelectDropdown.isOpen {
@@ -93,10 +99,17 @@
 
 .dropdown-item {
     padding: 5px 10px;
+    color: rgba(0, 0, 0, 0.88);
+    border-radius: 6px;
 }
 
 .dropdown-item:hover {
-    background-color: #969696;
+    background-color: rgba(0, 0, 0, 0.04);
+}
+
+.dropdown-item.selected {
+    background-color: #e6f4ff;
+    font-weight: 600;
 }
 
 
