@@ -17,8 +17,9 @@
 }
 
 .customSelectContainer.disabled {
-    pointer-events: none;
+    cursor: not-allowed;
     background-color: rgba(0, 0, 0, 0.04);
+    color: #101828AA;
 }
 
 .customSelectValueContainer {
@@ -37,6 +38,7 @@
     flex-wrap: wrap;
     gap: 5px;
     align-items: center;
+    min-height: 31px
 }
 
 .disabled .customSelectValueContainer {
@@ -51,6 +53,9 @@
     height: 31px;
     line-height: 31px;
     font-size: 16px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
 }
 
 .customSelectValue.hideCurrent {
@@ -90,9 +95,13 @@
 }
 
 .customSelectSearchInput.multipleInput {
-    position: static;
+    position: relative;
     padding: 0;
     flex: 1 0 0%;
+}
+
+.customSelectSearchInput.multipleInput:disabled {
+    pointer-events: none;
 }
 
 .customSelectSearchInput:disabled {
@@ -134,12 +143,23 @@
     transition: 100ms ease-out;
 }
 
+.dropdown-item.hasEllipsis {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 .dropdown-item:hover {
     background-color: #F9FAFB;
 }
 
 .dropdown-item.selected {
     background-color: #F9FAFB;
+}
+
+.dropdown-item.disabled-option {
+    background-color: rgba(0, 0, 0, 0.04);
+    cursor: not-allowed;
 }
 
 .dropdown-item.selected .selected-icon {
@@ -149,11 +169,12 @@
     transform: translateY(-50%);
 }
 
+.dropdown-item.selected.hasSelectedIcon {
+    padding-right: 35px;
+}
+
 .dropdown-tags {
-    display: -webkit-box;
-    display: -ms-flexbox;
     display: flex;
-    -ms-flex-wrap: wrap;
     flex-wrap: wrap;
     gap: 5px;
     position: relative;
@@ -170,21 +191,20 @@
     font-weight: 500;
     padding: 3px 4px;
     border-radius: 6px;
-    display: -webkit-box;
-    display: -ms-flexbox;
     display: flex;
-    -webkit-box-align: center;
-    -ms-flex-align: center;
     align-items: center;
     flex: 0 0 auto;
 }
 
+.dropdown-tag-label {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    max-width: 120px;
+}
+
 .dropdown-tag-close {
-    display: -webkit-box;
-    display: -ms-flexbox;
     display: flex;
-    -webkit-box-align: center;
-    -ms-flex-align: center;
     align-items: center;
     margin-left: 5px;
 }
@@ -255,4 +275,20 @@
 
 .customSelectDropdown::-webkit-scrollbar-thumb:hover {
     background: #EAECF0;
+}
+
+.customSelectLabel {
+    margin-bottom: 6px;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 20px;
+    color: #344054;
+}
+
+.customSelectHint {
+    margin-top: 8px;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 20px;
+    color: #475467;
 }

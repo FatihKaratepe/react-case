@@ -1,0 +1,11 @@
+.App {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding-bottom: 300px;
+}
+
+
+.mb-100 {
+   margin-bottom: 300px; 
+}

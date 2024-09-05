@@ -4,6 +4,8 @@ import './CustomSelect.css';
 
 interface CustomSelectProps {
   prefixIcon?: React.ReactNode | React.ReactElement;
+  label?: string;
+  hint?: string;
   options: any[];
   selectedIcon?: React.ReactNode | React.ReactElement;
   filter?: boolean;
@@ -18,6 +20,7 @@ interface CustomSelectProps {
   placeHolder?: string;
   notFoundText?: string;
   closeOnSelect?: boolean;
+  ellipsisLabel?: boolean;
   onChange: (option: any) => void;
 }
 
@@ -52,7 +55,7 @@ const ClearIcon = ({ color = '#555', width = 20, height = 20, onClick }: { color
   );
 };
 
-const CustomSelect = ({ options, disabled = false, filter = false, multiple = false, sorting, prefixIcon, selectedIcon, bindLabel, bindValue, placeHolder, onChange, notFoundText, closeOnSelect }: CustomSelectProps) => {
+const CustomSelect = ({ options, disabled = false, filter = false, multiple = false, sorting, prefixIcon, selectedIcon, bindLabel, bindValue, placeHolder, onChange, notFoundText, closeOnSelect, label, hint, ellipsisLabel }: CustomSelectProps) => {
 
   const [showMenu, setShowMenu] = useState(false);
   const [selectedValue, setSelectedValue] = useState(multiple ? [] as any[] : null as any);
@@ -72,7 +75,16 @@ const CustomSelect = ({ options, disabled = false, filter = false, multiple = fa
 
   useEffect(() => {
     const handler = (e: any) => {
-      if (inputRef.current && !inputRef.current.contains(e.target)) setShowMenu(false);
+      if (inputRef.current && !inputRef.current.contains(e.target)) {
+        setShowMenu(false);
+        if (filter) searchRef.current!.value = '';
+        if (multiple && filter && selectedValue.length > 0) searchRef.current!.style.display = 'none'
+      } else {
+        if (multiple && filter) {
+          searchRef.current!.style.display = 'block';
+          searchRef.current!.focus();
+        }
+      }
     };
 
     window.addEventListener("click", handler);
@@ -102,8 +114,9 @@ const CustomSelect = ({ options, disabled = false, filter = false, multiple = fa
     return '';
   };
 
+  /* eslint-disable react-hooks/exhaustive-deps */
   const getOptions = useMemo(() => {
-    let filteredOptions = options;
+    let filteredOptions = [...options];
 
     if (searchValue) {
       filteredOptions = options.filter((option) => {
@@ -126,6 +139,7 @@ const CustomSelect = ({ options, disabled = false, filter = false, multiple = fa
 
     return filteredOptions;
   }, [options, searchValue, bindLabel, sorting]);
+  /* eslint-enable react-hooks/exhaustive-deps */
 
 
   const isSelected = (option: any) => {
@@ -134,7 +148,9 @@ const CustomSelect = ({ options, disabled = false, filter = false, multiple = fa
     return bindValue ? selectedValue[bindValue] === option[bindValue] : selectedValue.value === option.value;
   };
 
+  /* eslint-disable react-hooks/exhaustive-deps */
   const onItemClick = useCallback((option: any) => {
+    if (option?.disabled) return;
     let newValue;
     if (multiple) {
       if (selectedValue.findIndex((o: any) => bindValue ? o[bindValue] === option[bindValue] : o.value === option.value) >= 0) newValue = removeOption(option);
@@ -150,6 +166,7 @@ const CustomSelect = ({ options, disabled = false, filter = false, multiple = fa
       document.querySelector('.customSelectValue')?.classList.remove('hideCurrent');
     }
   }, [multiple, selectedValue, bindValue, onChange, closeOnSelect]);
+  /* eslint-enable react-hooks/exhaustive-deps */
 
   const getDisplay = () => {
     return (multiple ?
@@ -157,7 +174,7 @@ const CustomSelect = ({ options, disabled = false, filter = false, multiple = fa
         {
           selectedValue?.map((option: any, index: number) => (
             <div key={index} className="dropdown-tag-item">
-              {bindLabel ? option[bindLabel] : option.label}
+              <div className="dropdown-tag-label">{bindLabel ? option[bindLabel] : option.label}</div>
               <span onClick={(e) => onTagRemove(e, option)} className="dropdown-tag-close" >
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M11 5L5 11M5 5L11 11" stroke="#98A2B3" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
@@ -166,10 +183,10 @@ const CustomSelect = ({ options, disabled = false, filter = false, multiple = fa
             </div>
           ))
         }
-        <input ref={searchRef} onChange={(e) => onSearch(e)} type="text" placeholder={!selectedValue || selectedValue.length === 0 ? placeHolder : ''} className="customSelectSearchInput multipleInput" disabled={filter !== true || disabled === true} />
+        {filter ? <input ref={searchRef} onChange={(e) => onSearch(e)} type="text" placeholder={selectedValue.length === 0 ? placeHolder : ''} className="customSelectSearchInput multipleInput" disabled={disabled === true} /> : (selectedValue.length === 0 ? <input ref={searchRef} onChange={(e) => onSearch(e)} type="text" placeholder={selectedValue.length === 0 ? placeHolder : ''} className="customSelectSearchInput multipleInput" disabled={true} /> : '')}
       </div>
       : <>
-        <input ref={searchRef} onChange={(e) => onSearch(e)} type="text" placeholder={!selectedValue || selectedValue.length === 0 ? placeHolder : ''} className="customSelectSearchInput" disabled={filter !== true || disabled === true} />
+        <input ref={searchRef} onChange={(e) => onSearch(e)} type="text" placeholder={!selectedValue ? placeHolder : ''} className="customSelectSearchInput" disabled={filter !== true || disabled === true} />
         <div className="customSelectValue">{bindLabel ? selectedValue?.[bindLabel] : selectedValue?.label}</div>
       </>
     );
@@ -187,6 +204,7 @@ const CustomSelect = ({ options, disabled = false, filter = false, multiple = fa
   };
 
   const handleInputClick = () => {
+    if (disabled) return;
     if (!showMenu) setShowMenu(true);
     if (filter) searchRef.current!.focus();
   };
@@ -208,6 +226,7 @@ const CustomSelect = ({ options, disabled = false, filter = false, multiple = fa
 
   return (
     <>
+      {label ? <div className="customSelectLabel">{label}</div> : ''}
       <div ref={inputRef} className={`customSelectContainer ${disabled ? ' disabled' : ''} ${showMenu ? 'customSelectOpened' : ''}`} onClick={() => { handleInputClick() }}>
         {
           prefixIcon ? <div className="customSelectPrefixIcon"> {prefixIcon} </div> : ''
@@ -227,7 +246,7 @@ const CustomSelect = ({ options, disabled = false, filter = false, multiple = fa
             <div ref={nodeRef} className={`customSelectDropdown ${prefixIcon ? 'hasIcon' : ''}`}>
               {
                 getOptions.length > 0 ? getOptions.map((option, index) => (
-                  <div onClick={() => onItemClick(option)} key={index} className={`dropdown-item ${isSelected(option) ? 'selected' : ''}`} >
+                  <div onClick={() => onItemClick(option)} key={index} className={`dropdown-item ${isSelected(option) ? 'selected' : ''} ${option?.disabled ? 'disabled-option' : ''} ${(selectedIcon && isSelected(option)) ? 'hasSelectedIcon' : ''} ${ellipsisLabel ? 'hasEllipsis' : ''}`} >
                     {bindLabel ? option[bindLabel] : option.label}
                     {(selectedIcon && isSelected(option)) ? <div className="selected-icon"> {selectedIcon} </div> : ''}
                   </div>
@@ -238,6 +257,8 @@ const CustomSelect = ({ options, disabled = false, filter = false, multiple = fa
 
         </div>
       </div>
+      {hint ? <div className="customSelectHint">{hint}</div> : ''}
+
     </>
   );
 }
