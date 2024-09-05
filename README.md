@@ -24,11 +24,24 @@ Project created with `create-react-app`
 npx create-react-app <app-name> --template typescript
 ```
 
+### Dependencies
+```
+@tanstack/react-query
+react-transition-group
+```
+
+### Dev Dependencies
+```
+@types/react-transition-group
+```
+----------
 
 ```
 node version: 20.16.0 
 npm version: 10.8.1
 ```
+
+----------
 
 ## API
 ### Props
