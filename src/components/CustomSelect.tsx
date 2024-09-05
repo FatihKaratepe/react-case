@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { CSSTransition } from 'react-transition-group';
 import './CustomSelect.css';
 
@@ -102,19 +102,19 @@ const CustomSelect = ({ options, disabled = false, filter = false, multiple = fa
     return '';
   };
 
-  const getOptions = () => {
+  const getOptions = useMemo(() => {
     let filteredOptions = options;
 
     if (searchValue) {
       filteredOptions = options.filter((option) => {
         const labelText = bindLabel ? getLabelText(option[bindLabel]) : getLabelText(option.label);
-        return labelText.toLowerCase().indexOf(searchValue.toLowerCase()) >= 0;
+        return labelText.toLowerCase().includes(searchValue.toLowerCase());
       });
     }
 
     if (sorting) {
       const { sortKey, sortType } = sorting;
-      filteredOptions.sort((a, b) => {
+      filteredOptions = filteredOptions.sort((a, b) => {
         const aValue = getLabelText(a[sortKey]);
         const bValue = getLabelText(b[sortKey]);
 
@@ -125,7 +125,7 @@ const CustomSelect = ({ options, disabled = false, filter = false, multiple = fa
     }
 
     return filteredOptions;
-  };
+  }, [options, searchValue, bindLabel, sorting]);
 
 
   const isSelected = (option: any) => {
@@ -134,12 +134,11 @@ const CustomSelect = ({ options, disabled = false, filter = false, multiple = fa
     return bindValue ? selectedValue[bindValue] === option[bindValue] : selectedValue.value === option.value;
   };
 
-  const onItemClick = (option: any) => {
+  const onItemClick = useCallback((option: any) => {
     let newValue;
     if (multiple) {
       if (selectedValue.findIndex((o: any) => bindValue ? o[bindValue] === option[bindValue] : o.value === option.value) >= 0) newValue = removeOption(option);
       else newValue = [...selectedValue, option];
-      searchRef.current!.focus();
     } else {
       newValue = option;
     }
@@ -150,7 +149,7 @@ const CustomSelect = ({ options, disabled = false, filter = false, multiple = fa
       searchRef.current!.value = '';
       document.querySelector('.customSelectValue')?.classList.remove('hideCurrent');
     }
-  };
+  }, [multiple, selectedValue, bindValue, onChange, closeOnSelect]);
 
   const getDisplay = () => {
     return (multiple ?
@@ -171,7 +170,7 @@ const CustomSelect = ({ options, disabled = false, filter = false, multiple = fa
       </div>
       : <>
         <input ref={searchRef} onChange={(e) => onSearch(e)} type="text" placeholder={!selectedValue || selectedValue.length === 0 ? placeHolder : ''} className="customSelectSearchInput" disabled={filter !== true || disabled === true} />
-        <div className="customSelectValue">{bindLabel ? selectedValue[bindLabel] : selectedValue?.label}</div>
+        <div className="customSelectValue">{bindLabel ? selectedValue?.[bindLabel] : selectedValue?.label}</div>
       </>
     );
   };
@@ -209,11 +208,14 @@ const CustomSelect = ({ options, disabled = false, filter = false, multiple = fa
 
   return (
     <>
-      <div ref={inputRef} className={`customSelectContainer ${disabled ? 'disabled' : ''}`} onClick={() => { handleInputClick() }}>
+      <div ref={inputRef} className={`customSelectContainer ${disabled ? ' disabled' : ''} ${showMenu ? 'customSelectOpened' : ''}`} onClick={() => { handleInputClick() }}>
+        {
+          prefixIcon ? <div className="customSelectPrefixIcon"> {prefixIcon} </div> : ''
+        }
         <div className={`customSelectArrow ${showMenu ? 'isOpen' : ''}`}>
           {!selectedValue || selectedValue.length === 0 ? <ArrowIcon /> : <ClearIcon onClick={(e) => clearValue(e)} />}
         </div>
-        <div className={`customSelectValueContainer${multiple ? ' multipleContainer' : ''}`}>
+        <div className={`customSelectValueContainer ${multiple ? 'multipleContainer' : ''} ${prefixIcon ? 'hasIcon' : ''}`}>
           {getDisplay()}
           <CSSTransition
             nodeRef={nodeRef}
@@ -222,10 +224,10 @@ const CustomSelect = ({ options, disabled = false, filter = false, multiple = fa
             classNames="dropdown"
             unmountOnExit
           >
-            <div ref={nodeRef} className={`customSelectDropdown`}>
+            <div ref={nodeRef} className={`customSelectDropdown ${prefixIcon ? 'hasIcon' : ''}`}>
               {
-                getOptions().length > 0 ? getOptions().map((option, index) => (
-                  <div onClick={() => onItemClick(option)} key={index} className={`dropdown-item${isSelected(option) ? ' selected' : ''}`} >
+                getOptions.length > 0 ? getOptions.map((option, index) => (
+                  <div onClick={() => onItemClick(option)} key={index} className={`dropdown-item ${isSelected(option) ? 'selected' : ''}`} >
                     {bindLabel ? option[bindLabel] : option.label}
                     {(selectedIcon && isSelected(option)) ? <div className="selected-icon"> {selectedIcon} </div> : ''}
                   </div>
